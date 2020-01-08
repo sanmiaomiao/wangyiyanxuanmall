@@ -90,8 +90,10 @@ class Search extends React.Component {
         DeviceStorage.save('searchhistory',value)
     }else{console.log('已存在');}
         
-        alert("您输入的内容为："+this.state.text);
-        this.props.navigation.navigate('SearchResult')
+        //alert("您输入的内容为："+this.state.text);
+        this.props.navigation.navigate('SearchResult', {
+              name: this.state.text,
+            })
     }
 
     closeSearch=()=> {
@@ -99,7 +101,7 @@ class Search extends React.Component {
        this.props.navigation.navigate('Index');
     };
     clearKeyword= ()=> {
-        this.setData({
+        this.setState({
             keyword: '',
             searchStatus: false
         });
@@ -258,7 +260,7 @@ class Search extends React.Component {
                             {
                                 this.state.historyKeyword && this.state.historyKeyword.map((item)=>{
                                     return(
-                                        <View style={styles.searchKeywordsItem}><Text onPress={this.onKeywordTap} style={styles.searchKeywordsItemText} >{item}</Text></View>
+                                        <View style={styles.searchKeywordsItem}><Text onPress={this.onKeywordTap}  >{item}</Text></View>
                                     )
 
                                 })
@@ -389,7 +391,7 @@ body:{
             borderColor:'#999',
     },
      searchKeywords:{
-       marginTop:80,
+       marginTop:120,
 
     },
     searchKeywords2:{

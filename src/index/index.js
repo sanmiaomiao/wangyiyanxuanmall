@@ -1,6 +1,7 @@
 
 
 import React, {Component} from 'react';
+import TabNavigator from 'react-native-tab-navigator';
 import {
     StyleSheet,
     Image,
@@ -13,12 +14,9 @@ import {
     ScrollView,
 } from 'react-native';
 
-import Swiper from './childComponent/swiper';
-import Category from './childComponent/category';
-import Freshmen from './childComponent/freshmen';
-import Brand from './childComponent/brand';
-import New from './childComponent/new';
-import {getindexdata} from "../network/interface";
+import Home from './Home';
+import Fenlei from '../fenlei/fenlei';
+import Worth from '../worth/worth';
 //屏幕信息
 
 //获取屏幕的宽度
@@ -34,40 +32,14 @@ class Index extends Component {
     constructor(props) {
         super(props);
         this.state={
-            goodsCount: 93,
-            category:[],
-            freshMenBenus:[],
-            newGoods: [],
-            hotGoods: [],
-            topics: [],
-            brands: [],
-            banner: [],
-            channel: []
+            selectedTab:'tb_index',
         }
     }
 
 
-    getIndexData=async()=>{
-        console.log('getdata')
-        const result=await getindexdata();
-        console.log(result);
-        var indexData=result.data[0].data
-        this.setState({
-            category:indexData.categoryList,
-            freshMenBenus: indexData.indexActivityModule,
-            newGoods: indexData.newGoodsList,
-            hotGoods: indexData.hotGoodsList,
-            topics: indexData.topicList,
-            brands: indexData.brandList,
-            banner: indexData.banner,
-            channel: indexData.channel,
-        })
 
-
-    }
     //初始化数据
     componentDidMount() {
-        this.getIndexData();
     };
     componentWillUnmount() {
         this.setState = (state, callback) => {
@@ -79,41 +51,58 @@ class Index extends Component {
 
     render() {
         return (
-            <View>
-                <ScrollView >
-                <View style={styles.search}>
-                    <View style={styles.searchInput}>
-                        <Image source={{uri:"http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/search2-2fb94833aa.png"}} style={{width:15,height:15}}/>
-                        <Text style={styles.searchText} onPress={() => this.props.navigation.navigate('Search')}>商品搜索, 共{this.state.goodsCount}款好物</Text>
-                    </View>
-                </View>
-                <View>
-                    <Swiper bannerinfo={this.state.banner} />
-                </View>
-                <View style={styles.mMenu}>
-                    {
-                        this.state.channel.map((item)=>{
-                            return(
-                                <View style={styles.mMenuItem} key={item.id}>
-                                        <Image source={{uri:item.icon}} style={styles.mMenuImage} />
-                                        <Text style={styles.mMenuText}>{item.desc}</Text>
-
-
-                                </View>
-
-                            )
-
-                        })
-                    }
-
-                </View>
-                <Category categoryinfo={this.state.category} />
-                <Freshmen/>
-                    <Brand brandinfo={this.state.brands} />
-                    <New newinfo={this.state.newGoods}/>
-
-                </ScrollView>
+            <View style={styles.container}>
+                <TabNavigator>
+                    <TabNavigator.Item
+                        selected={this.state.selectedTab === 'home'}
+                        title="首页"
+                        renderIcon={() => <Image style={styles.image} source={require('../images/shop.png')} />}
+                        renderSelectedIcon={() => <Image style={styles.image} source={require('../images/shop.png')} />}
+                        badgeText=""
+                        onPress={() => this.setState({ selectedTab: 'home' })}>
+                        <View style={styles.page1}>
+                            <Home navigation={this.props.navigation}/>
+                        </View>
+                    </TabNavigator.Item>
+                    <TabNavigator.Item
+                        selected={this.state.selectedTab === 'category'}
+                        title="分类"
+                        renderIcon={() => <Image style={styles.image} source={require('../images/category.png')} />}
+                        renderSelectedIcon={() => <Image style={styles.image} source={require('../images/category.png')} />}
+                        onPress={() => this.setState({ selectedTab: 'category' })}>
+                        <View style={styles.page2}>
+                            <Fenlei/>
+                        </View>
+                    </TabNavigator.Item>
+                    <TabNavigator.Item
+                        selected={this.state.selectedTab === 'pic'}
+                        title="值得买"
+                        renderIcon={() => <Image style={styles.image} source={require('../images/pic.png')} />}
+                        renderSelectedIcon={() => <Image style={styles.image} source={require('../images/pic.png')} />}
+                        onPress={() => this.setState({ selectedTab: 'pic' })}>
+                        <View style={styles.page3}>
+                            <Worth/>
+                        </View>
+                    </TabNavigator.Item>
+                    <TabNavigator.Item
+                        selected={this.state.selectedTab === 'cart'}
+                        title="购物车"
+                        renderIcon={() => <Image style={styles.image} source={require('../images/cart.png')} />}
+                        renderSelectedIcon={() => <Image style={styles.image} source={require('../images/cart.png')} />}
+                        onPress={() => this.setState({ selectedTab: 'cart' })}>
+                        <View style={styles.page4}></View>
+                    </TabNavigator.Item>
+                    <TabNavigator.Item
+                        selected={this.state.selectedTab === 'profile'}
+                        title="个人"
+                        renderIcon={() => <Image style={styles.image} source={require('../images/account.png')} />}
+                        renderSelectedIcon={() => <Image style={styles.image} source={require('../images/account.png')} />}
+                        onPress={() => this.setState({ selectedTab: 'profile' })}>
+                        <View style={styles.page5}></View>
+                    </TabNavigator.Item>
+                </TabNavigator>
             </View>
+
 
 
 
@@ -125,61 +114,33 @@ class Index extends Component {
 }
 
 const styles = StyleSheet.create({
-    search: {
-        marginTop:10,
-        height: 40,
-        width: width,
-        paddingLeft:30,
-        paddingRight:30,
-        backgroundColor: "#fff",
 
-    },
-    searchText: {
-        lineHeight: 42,
-        color: "#666",
-        paddingLeft: 10,
-        fontSize: 15,
-    },
-    searchInput: {
-        width: "100%",
-        minHeight: 30,
-        backgroundColor: "#ededed",
-        borderRadius: 8,
+
+    container: {
         flex: 1,
-        flexDirection: 'row',
-        alignItems:"center",
-        paddingLeft:10,
-
+        backgroundColor: '#F5FCFF',
     },
-    mMenu: {
-    flex:1,
-    height: 30,
-    width: width,
-    flexDirection:'row',
-    alignItems: "center",
-    justifyContent: "space-around",
-    backgroundColor:"#fff",
-},
-    mMenuItem:{
-    flex: 1,
-    flexDirection:'row',
-        justifyContent:'center',
-    paddingTop:20,
-},
-
-    mMenuImage: {
-    width: 20,
-    height: 20,
-    marginBottom: 12,
-},
-
-    mMenuText: {
-    fontSize: 13,
-    textAlign: "center",
-    lineHeight: 20,
-    color: "#333",
-}
-
+    page1: {
+        flex: 1,
+       // backgroundColor: 'red'
+    },
+    page2: {
+        flex: 1,
+       // backgroundColor: 'yellow'
+    }, page3: {
+        flex: 1,
+       // backgroundColor: 'blue'
+    }, page4: {
+        flex: 1,
+        backgroundColor: 'green'
+    }, page5: {
+        flex: 1,
+        backgroundColor: 'red'
+    },
+    image: {
+        height: 22,
+        width: 22
+    }
 
 
 
