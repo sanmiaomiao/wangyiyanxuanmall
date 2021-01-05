@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "AsyncStorage": "^0.1.5",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "jetifier": "^1.6.5",
     "postinstall": "^0.7.0",
     "react": "16.9.0",
